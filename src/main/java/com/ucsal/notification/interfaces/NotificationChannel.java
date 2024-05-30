@@ -1,4 +1,4 @@
-package com.ucsal.interfaces;
+package com.ucsal.notification.interfaces;
 
 import com.ucsal.notification.models.Notification;
 

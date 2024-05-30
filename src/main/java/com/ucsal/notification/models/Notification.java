@@ -10,6 +10,8 @@ public class Notification {
 		this.subject = subject;
 		this.message = message;
 	}
+	
+	
 	public String getRecipient() {
 		return recipient;
 	}
