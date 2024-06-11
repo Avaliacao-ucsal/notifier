@@ -4,34 +4,24 @@ import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import com.ucsal.notification.annotations.NoticationChannelType;
 import com.ucsal.notification.interfaces.NotificationChannel;
 import com.ucsal.notification.models.Notification;
 
-@NoticationChannelType("email")
 public class EmailNotification implements NotificationChannel {
-    private String host;
-    private String user;
-    private String apiToken;
+    private final ConfigEmailNotification config;
 
-    public EmailNotification(String host, String user, String apiToken) {
-        this.host = host;
-        this.user = user;
-        this.apiToken = apiToken;
+    public EmailNotification(ConfigEmailNotification config) {
+        this.config = config;
     }
 
     @Override
     public void send(Notification notification) {
-        Properties properties = new Properties();
-        properties.put("mail.smtp.host", this.host);
-        properties.put("mail.smtp.port", "2525");
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
+        Properties properties = config.getProperties();
 
         Authenticator authenticator = new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, apiToken);
+                return new PasswordAuthentication(config.getUser(), config.getApiToken());
             }
         };
 
@@ -39,7 +29,7 @@ public class EmailNotification implements NotificationChannel {
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(user));
+            message.setFrom(new InternetAddress(config.getUser()));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(notification.getRecipient()));
             message.setSubject(notification.getSubject());
             message.setText(notification.getMessage());
@@ -49,4 +39,4 @@ public class EmailNotification implements NotificationChannel {
             mex.printStackTrace();
         }
     }
-} 
+}
